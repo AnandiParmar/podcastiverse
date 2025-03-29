@@ -5,7 +5,7 @@ import PodcastGrid from '@/components/podcast/PodcastGrid';
 import SearchPodcast from '@/components/podcast/SearchPodcast';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { ArrowRight, Sparkles, Headphones, Clock, Trophy, Fire } from 'lucide-react';
+import { ArrowRight, Sparkles, Headphones, Clock, Trophy, Flame, Mic } from 'lucide-react';
 import { getNewPodcasts, getPopularPodcasts, mockPodcasts } from '@/data/mockPodcasts';
 
 const Home = () => {
@@ -90,7 +90,7 @@ const Home = () => {
           { icon: Headphones, title: '10,000+', description: 'Podcasts' },
           { icon: Clock, title: '50,000+', description: 'Hours of Content' },
           { icon: Trophy, title: '500+', description: 'Top Creators' },
-          { icon: Fire, title: '2M+', description: 'Monthly Listeners' },
+          { icon: Flame, title: '2M+', description: 'Monthly Listeners' },
         ].map((stat, index) => (
           <div 
             key={index} 
@@ -133,7 +133,7 @@ const Home = () => {
         <div className="flex justify-between items-center mb-6">
           <div>
             <h2 className="text-2xl font-bold flex items-center">
-              <Fire className="h-5 w-5 mr-2 text-podcast-highlight" />
+              <Flame className="h-5 w-5 mr-2 text-podcast-highlight" />
               Popular Podcasts
             </h2>
             <p className="text-muted-foreground mt-1">What others are listening to</p>
