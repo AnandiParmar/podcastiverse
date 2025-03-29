@@ -9,6 +9,7 @@ import Browse from "@/pages/Browse";
 import Search from "@/pages/Search";
 import Favorites from "@/pages/Favorites";
 import History from "@/pages/History";
+import Categories from "@/pages/Categories";
 import AddPodcast from "@/pages/AddPodcast";
 import PodcastDetail from "@/pages/PodcastDetail";
 import Profile from "@/pages/Profile";
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="search" element={<Search />} />
             <Route path="favorites" element={<Favorites />} />
             <Route path="history" element={<History />} />
+            <Route path="categories" element={<Categories />} />
             <Route path="add-podcast" element={<AddPodcast />} />
             <Route path="podcast/:id" element={<PodcastDetail />} />
             <Route path="profile" element={<Profile />} />

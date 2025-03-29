@@ -3,7 +3,7 @@ import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { 
   Home, Search, Heart, History, PlusCircle, User, LogOut, Mic,
-  Menu, X
+  Menu, X, BookOpen, Bookmark
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { cn } from '@/lib/utils';
@@ -20,6 +20,7 @@ const MainLayout = () => {
   const navItems = [
     { name: 'Home', path: '/', icon: Home },
     { name: 'Browse', path: '/browse', icon: Mic },
+    { name: 'Categories', path: '/categories', icon: BookOpen },
     { name: 'Search', path: '/search', icon: Search },
     ...(isAuthenticated ? [
       { name: 'Favorites', path: '/favorites', icon: Heart },
@@ -32,11 +33,14 @@ const MainLayout = () => {
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background to-background/95">
       {isMobile && (
-        <header className="border-b border-border bg-background p-4 flex justify-between items-center">
+        <header className="border-b border-border/40 backdrop-blur-sm bg-background/80 p-4 flex justify-between items-center sticky top-0 z-40">
           <Link to="/" className="flex items-center space-x-2">
-            <Mic className="h-6 w-6 text-podcast-primary" />
+            <div className="relative">
+              <Mic className="h-7 w-7 text-podcast-primary" />
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-podcast-highlight rounded-full animate-pulse" />
+            </div>
             <span className="font-bold text-xl podcast-gradient-text">Podcastiverse</span>
           </Link>
           <Button 
@@ -44,6 +48,7 @@ const MainLayout = () => {
             size="icon" 
             onClick={toggleSidebar}
             aria-label="Toggle menu"
+            className="relative"
           >
             <Menu className="h-6 w-6" />
           </Button>
@@ -53,11 +58,13 @@ const MainLayout = () => {
       <div className="flex flex-1 overflow-hidden">
         <aside 
           className={cn(
-            "bg-sidebar border-r border-sidebar-border h-screen flex-shrink-0",
-            isMobile ? "fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-200 ease-in-out" : "w-64",
+            "bg-sidebar border-r border-sidebar-border h-screen flex-shrink-0 relative",
+            isMobile ? "fixed inset-y-0 left-0 z-50 w-72 transform transition-transform duration-300 ease-in-out" : "w-72",
             isMobile && !sidebarOpen && "-translate-x-full"
           )}
         >
+          <div className="absolute inset-0 bg-podcast-gradient opacity-5 pointer-events-none" />
+          
           {isMobile && (
             <div className="p-4 flex justify-between items-center border-b border-sidebar-border">
               <span className="font-bold text-xl podcast-gradient-text">Podcastiverse</span>
@@ -75,26 +82,34 @@ const MainLayout = () => {
           {!isMobile && (
             <div className="p-6">
               <Link to="/" className="flex items-center space-x-2">
-                <Mic className="h-6 w-6 text-podcast-primary" />
+                <div className="relative">
+                  <Mic className="h-7 w-7 text-podcast-primary" />
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-podcast-highlight rounded-full animate-pulse" />
+                </div>
                 <span className="font-bold text-xl podcast-gradient-text">Podcastiverse</span>
               </Link>
             </div>
           )}
           
-          <nav className="mt-6 px-4 space-y-1">
+          <nav className="mt-6 px-4 space-y-1.5">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
                 className={cn(
-                  "flex items-center px-4 py-3 text-sm rounded-lg transition-colors",
+                  "flex items-center px-4 py-3 text-sm rounded-lg transition-all duration-200",
                   location.pathname === item.path 
-                    ? "bg-sidebar-accent text-white font-medium" 
-                    : "text-sidebar-foreground hover:bg-sidebar-accent/50"
+                    ? "bg-sidebar-accent text-white font-medium shadow-md" 
+                    : "text-sidebar-foreground hover:bg-sidebar-accent/40 hover:text-white"
                 )}
                 onClick={isMobile ? toggleSidebar : undefined}
               >
-                <item.icon className="h-5 w-5 mr-3" />
+                <item.icon className={cn(
+                  "h-5 w-5 mr-3",
+                  location.pathname === item.path 
+                    ? "text-podcast-highlight" 
+                    : "text-sidebar-foreground group-hover:text-white"
+                )} />
                 {item.name}
               </Link>
             ))}
@@ -103,7 +118,7 @@ const MainLayout = () => {
               <div className="pt-6 mt-6 border-t border-sidebar-border">
                 <Button 
                   variant="ghost" 
-                  className="flex w-full items-center px-4 py-3 text-sm rounded-lg text-sidebar-foreground hover:bg-sidebar-accent/50"
+                  className="flex w-full items-center px-4 py-3 text-sm rounded-lg text-sidebar-foreground hover:bg-sidebar-accent/40 hover:text-white"
                   onClick={() => console.log('Logout')}
                 >
                   <LogOut className="h-5 w-5 mr-3" />
@@ -112,6 +127,26 @@ const MainLayout = () => {
               </div>
             )}
           </nav>
+          
+          <div className="absolute bottom-8 left-4 right-4">
+            <div className="bg-podcast-dark rounded-lg p-4 border border-podcast-primary/20">
+              <h4 className="font-semibold text-sm mb-2 podcast-gradient-text">Pro Tip</h4>
+              <p className="text-xs text-sidebar-foreground mb-3">
+                Create your own podcast and share your voice with the world!
+              </p>
+              <Button 
+                size="sm" 
+                className="w-full text-xs bg-podcast-gradient hover:opacity-90"
+                onClick={() => {
+                  if (isMobile) toggleSidebar();
+                  window.location.href = '/add-podcast';
+                }}
+              >
+                <PlusCircle className="h-3.5 w-3.5 mr-1.5" />
+                Start Creating
+              </Button>
+            </div>
+          </div>
         </aside>
         
         <main className={cn(
@@ -120,12 +155,12 @@ const MainLayout = () => {
         )}>
           {isMobile && sidebarOpen && (
             <div 
-              className="fixed inset-0 bg-black/50 z-40"
+              className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"
               onClick={toggleSidebar}
               aria-hidden="true"
             />
           )}
-          <div className="container mx-auto py-6 px-4 md:px-6 max-w-7xl">
+          <div className="container mx-auto py-8 px-4 md:px-6 max-w-7xl">
             <Outlet />
           </div>
         </main>
