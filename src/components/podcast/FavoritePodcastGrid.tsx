@@ -39,7 +39,7 @@ const FavoritePodcastGrid = ({
             creator={podcast.creator}
             coverImage={podcast.coverImage}
             duration={podcast.duration}
-            isFavorite={podcast.isFavorite}
+            isFavorite={true}
             isNew={podcast.isNew}
             isPopular={podcast.isPopular}
           />

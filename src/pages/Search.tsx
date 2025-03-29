@@ -1,26 +1,44 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import PodcastGrid from '@/components/podcast/PodcastGrid';
 import SearchPodcast from '@/components/podcast/SearchPodcast';
-import { searchPodcasts } from '@/data/mockPodcasts';
+import { searchPodcasts, mockPodcasts } from '@/data/mockPodcasts';
 
 const Search = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const queryParam = searchParams.get('q') || '';
   
-  const [searchResults, setSearchResults] = React.useState(
+  const [searchResults, setSearchResults] = useState(
     queryParam ? searchPodcasts(queryParam) : []
   );
   
-  const handleSearch = (query: string) => {
+  const handleSearch = (query) => {
     setSearchParams({ q: query });
-    setSearchResults(searchPodcasts(query));
+    
+    // If the query is empty, clear results
+    if (!query.trim()) {
+      setSearchResults([]);
+      return;
+    }
+    
+    // Search in title, creator, and category
+    const results = mockPodcasts.filter(podcast => 
+      podcast.title.toLowerCase().includes(query.toLowerCase()) ||
+      podcast.creator.toLowerCase().includes(query.toLowerCase()) ||
+      podcast.category.toLowerCase().includes(query.toLowerCase()) ||
+      podcast.description.toLowerCase().includes(query.toLowerCase())
+    );
+    
+    setSearchResults(results);
   };
   
-  React.useEffect(() => {
+  // Update search results when URL query parameter changes
+  useEffect(() => {
     if (queryParam) {
-      setSearchResults(searchPodcasts(queryParam));
+      handleSearch(queryParam);
+    } else {
+      setSearchResults([]);
     }
   }, [queryParam]);
   

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { 
@@ -7,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
+import Footer from './Footer';
 
 const MainLayout = () => {
   const location = useLocation();
@@ -128,21 +130,24 @@ const MainLayout = () => {
           </nav>
         </aside>
         
-        <main className={cn(
-          "flex-1 overflow-auto",
-          isMobile && sidebarOpen && "opacity-50"
-        )}>
-          {isMobile && sidebarOpen && (
-            <div 
-              className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"
-              onClick={toggleSidebar}
-              aria-hidden="true"
-            />
-          )}
-          <div className="container mx-auto py-8 px-4 md:px-6 max-w-7xl">
-            <Outlet />
-          </div>
-        </main>
+        <div className="flex flex-col flex-1 overflow-auto">
+          <main className={cn(
+            "flex-1 overflow-auto",
+            isMobile && sidebarOpen && "opacity-50"
+          )}>
+            {isMobile && sidebarOpen && (
+              <div 
+                className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"
+                onClick={toggleSidebar}
+                aria-hidden="true"
+              />
+            )}
+            <div className="container mx-auto py-8 px-4 md:px-6 max-w-7xl">
+              <Outlet />
+            </div>
+          </main>
+          <Footer />
+        </div>
       </div>
     </div>
   );

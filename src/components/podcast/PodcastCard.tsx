@@ -33,10 +33,36 @@ const PodcastCard = ({
   const [favorite, setFavorite] = React.useState(isFavorite);
   const { toast } = useToast();
   
+  React.useEffect(() => {
+    setFavorite(isFavorite);
+  }, [isFavorite]);
+  
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    // Toggle favorite state
     setFavorite(!favorite);
+    
+    // Update favorites in localStorage
+    const favoritesFromStorage = localStorage.getItem('favorites') 
+      ? JSON.parse(localStorage.getItem('favorites') || '[]') 
+      : [];
+    
+    let updatedFavorites;
+    if (!favorite) {
+      // Add to favorites if not already there
+      if (!favoritesFromStorage.includes(id)) {
+        updatedFavorites = [...favoritesFromStorage, id];
+      } else {
+        updatedFavorites = favoritesFromStorage;
+      }
+    } else {
+      // Remove from favorites
+      updatedFavorites = favoritesFromStorage.filter((favId: string) => favId !== id);
+    }
+    
+    localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
     
     toast({
       title: favorite ? "Removed from favorites" : "Added to favorites",
@@ -52,11 +78,11 @@ const PodcastCard = ({
           <img 
             src={coverImage} 
             alt={title} 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover rounded-md"
           />
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-md" />
           
-          <div className="podcast-play-button left-1/2 top-1/2">
+          <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm p-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
             <Play className="h-6 w-6 text-white ml-1" />
           </div>
           

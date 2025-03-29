@@ -1,19 +1,52 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { mockPodcasts } from '@/data/mockPodcasts';
 import { Bookmark, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
 import FavoritePodcastGrid from '@/components/podcast/FavoritePodcastGrid';
+import { useNavigate } from 'react-router-dom';
 
 const Favorites = () => {
-  // In a real app, this would come from a user's saved favorites in a database
-  const [favorites, setFavorites] = useState(
-    mockPodcasts.filter(podcast => podcast.isFavorite).slice(0, 8)
-  );
+  const navigate = useNavigate();
+  const [favorites, setFavorites] = useState([]);
 
-  const handleRemoveFavorite = (id: string) => {
+  // Load favorites from localStorage on component mount
+  useEffect(() => {
+    const loadFavorites = () => {
+      const favoritesFromStorage = localStorage.getItem('favorites')
+        ? JSON.parse(localStorage.getItem('favorites') || '[]')
+        : [];
+      
+      const favoritePodcasts = mockPodcasts.filter(podcast => 
+        favoritesFromStorage.includes(podcast.id)
+      );
+      
+      setFavorites(favoritePodcasts);
+    };
+
+    loadFavorites();
+    
+    // Add event listener to update favorites when localStorage changes
+    window.addEventListener('storage', loadFavorites);
+    
+    return () => {
+      window.removeEventListener('storage', loadFavorites);
+    };
+  }, []);
+
+  const handleRemoveFavorite = (id) => {
+    // Update UI
     setFavorites(favorites.filter(podcast => podcast.id !== id));
+    
+    // Update localStorage
+    const favoritesFromStorage = localStorage.getItem('favorites')
+      ? JSON.parse(localStorage.getItem('favorites'))
+      : [];
+    
+    const updatedFavorites = favoritesFromStorage.filter(favId => favId !== id);
+    localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+    
     toast({
       title: "Removed from favorites",
       description: "Podcast has been removed from your favorites",
@@ -57,7 +90,10 @@ const Favorites = () => {
           <p className="text-muted-foreground text-center max-w-md">
             You haven't added any podcasts to your favorites yet. Browse and mark podcasts you love to find them here.
           </p>
-          <Button className="mt-4 bg-podcast-gradient hover:opacity-90 transition-opacity">
+          <Button 
+            className="mt-4 bg-podcast-gradient hover:opacity-90 transition-opacity"
+            onClick={() => navigate('/browse')}
+          >
             Browse Podcasts
           </Button>
         </div>
