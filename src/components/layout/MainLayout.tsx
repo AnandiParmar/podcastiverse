@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { 
@@ -127,26 +126,6 @@ const MainLayout = () => {
               </div>
             )}
           </nav>
-          
-          <div className="absolute bottom-8 left-4 right-4">
-            <div className="bg-podcast-dark rounded-lg p-4 border border-podcast-primary/20">
-              <h4 className="font-semibold text-sm mb-2 podcast-gradient-text">Pro Tip</h4>
-              <p className="text-xs text-sidebar-foreground mb-3">
-                Create your own podcast and share your voice with the world!
-              </p>
-              <Button 
-                size="sm" 
-                className="w-full text-xs bg-podcast-gradient hover:opacity-90"
-                onClick={() => {
-                  if (isMobile) toggleSidebar();
-                  window.location.href = '/add-podcast';
-                }}
-              >
-                <PlusCircle className="h-3.5 w-3.5 mr-1.5" />
-                Start Creating
-              </Button>
-            </div>
-          </div>
         </aside>
         
         <main className={cn(
