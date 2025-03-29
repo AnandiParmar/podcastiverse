@@ -33,7 +33,16 @@ const FavoritePodcastGrid = ({
     <div className={`grid ${getColumnsClass()} gap-6`}>
       {podcasts.map((podcast) => (
         <div key={podcast.id} className="relative group">
-          <PodcastCard podcast={podcast} />
+          <PodcastCard 
+            id={podcast.id}
+            title={podcast.title}
+            creator={podcast.creator}
+            coverImage={podcast.coverImage}
+            duration={podcast.duration}
+            isFavorite={podcast.isFavorite}
+            isNew={podcast.isNew}
+            isPopular={podcast.isPopular}
+          />
           <Button
             variant="destructive"
             size="icon"
